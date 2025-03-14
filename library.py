@@ -1,8 +1,15 @@
+import ast  # Add this at the top with other imports
+
 print("\n" + "="*50)
 print("📚 WELCOME TO THE LIBRARY MANAGEMENT SYSTEM 📚")
 print("="*50 + "\n")
 
-booklist = []
+# Load existing books from file
+try:
+    with open('library.txt', 'r') as f:
+        booklist = ast.literal_eval(f.read())
+except (FileNotFoundError, SyntaxError):
+    booklist = []
 matchingBook = []
 
 while True:
@@ -33,15 +40,43 @@ while True:
                 print("│ Read    : " + ("✅" if book['Read This book?'].lower() == 'y' else "❌"))
                 print("─"*40)
     elif decision == '2':
+        title = input('Enter the title: ').capitalize()
+        author = input('Enter the author: ').title()
+        
+        # New year input validation
+        while True:
+            try:
+                year = int(input('Enter the year: '))
+                current_year = 2025  # You can import datetime to get current year automatically
+                if year > current_year:
+                    print(f'❌ Invalid year. Year cannot be greater than {current_year}')
+                    continue
+                elif year < 0:
+                    print('❌ Invalid year. Year cannot be negative')
+                    continue
+                break
+            except ValueError:
+                print('❌ Invalid input. Please enter a valid year in numbers')
+                continue
+                
+        genre = input('Enter the genre: ').capitalize()
+        read = input('Have you read this book? (y/n): ')
+        
         book = {
-            'Title': input('Enter the title: ').capitalize(),
-            'Author': input('Enter the author: ').title(),  # Changed from capitalize() to title()
-            'Year': int(input('Enter the year: ')),
-            'Genre': input('Enter the genre: ').capitalize(),
-            'Read This book?': input('Have you read this book? (y/n): ')
+            'Title': title,
+            'Author': author,
+            'Year': year,
+            'Genre': genre,
+            'Read This book?': read
         }
+        
         booklist.append(book)
-        print('Book added successfully')
+        try:
+            with open('library.txt', 'w') as f:
+                f.write(str(booklist))
+            print('✅ Book added successfully and saved to file')
+        except:
+            print('❌ Error saving to file')
         continue
     elif decision == '3':
         removeBook = input('Enter the title of the book you want to remove: ').capitalize()
@@ -54,6 +89,13 @@ while True:
                 break
         if not book_found:  # If book was never found, inform the user
             print('Book not found')
+        if book_found:
+            try:
+                with open('library.txt', 'w') as f:
+                    f.write(str(booklist))
+                print('✅ Book removed successfully and saved to file')
+            except:
+                print('❌ Error saving to file')
         continue
 
         
@@ -105,8 +147,13 @@ while True:
         print('─'*40)
 
     elif decision == '6':
-        print('\n👋 Thank you for using the Library Management System!')
-        print('📚 Library saved successfully. Goodbye! ✨')
+        try:
+            with open('library.txt', 'w') as f:
+                f.write(str(booklist))
+            print('\n👋 Thank you for using the Library Management System!')
+            print('📚 Library saved successfully. Goodbye! ✨')
+        except:
+            print('❌ Error saving to file')
         break
 
     else:

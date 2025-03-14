@@ -48,5 +48,9 @@ Each book entry contains:
 
 ## 📝 Note
 
-The current version stores data in memory only. Data will be lost when the program is closed.
+The program stores data in 'library.txt' file:
+- Books are automatically loaded when starting the program
+- Changes are saved after adding/removing books
+- Data persists between program sessions
+- The library file is stored in the same directory as the program
 
